@@ -1,8 +1,5 @@
 package ontop.controller;
 
-import ontop.entity.WalletTransactionHistory;
-import ontop.service.WalletTransactionHistoryService;
-import ontop.service.WalletTransactionHistoryServiceImpl;
 import ontop.transferModels.*;
 import ontop.service.TransactionsServiceImpl;
 import ontop.service_gateways.BalanceTransactionsApiServiceImpl;
@@ -17,8 +14,6 @@ public class TransactionsController {
 
     @Autowired
     BalanceTransactionsApiServiceImpl balanceTransactionsApiService;
-    @Autowired
-    WalletTransactionHistoryService walletTransactionHistoryService;
 
     @Autowired
     TransactionsServiceImpl transactionsService;
@@ -38,17 +33,4 @@ public class TransactionsController {
     public TransactionResponse executeTransaction(@RequestBody TransactionRequest transactionRequest){
         return transactionsService.createTransaction(transactionRequest);
     }
-
-    @GetMapping("/getwallethistorybyid/{user_id}")
-    public Optional<WalletTransactionHistory>getWalletTransactionHistory(@PathVariable(value = "user_id")int userId){
-        return walletTransactionHistoryService.getWalletTransactionHistoryById(userId);
-    }
-
-
-
-
-
-
-
-
 }

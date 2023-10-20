@@ -2,7 +2,7 @@ package ontop.service;
 
 import ontop.business.TransactionStatus;
 import ontop.entity.WalletTransactionHistory;
-import ontop.repository.WalletTransactionHistoryRespository;
+import ontop.repository.WalletTransactionHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class WalletTransactionHistoryServiceImpl implements WalletTransactionHis
     @Autowired
     WalletTransactionHistory walletTransactionHistory;
     @Autowired
-    WalletTransactionHistoryRespository historyRepository;
+    WalletTransactionHistoryRepository historyRepository;
     @Override
     public void saveWalletTransactionInformation(int userId, BigDecimal amount) {
         walletTransactionHistory.setUserID(userId);
