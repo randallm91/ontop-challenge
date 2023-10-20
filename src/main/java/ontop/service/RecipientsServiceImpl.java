@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RecipientsServiceImpl implements RecipientsService {
+public class RecipientsServiceImpl extends Recipients implements RecipientsService {
 
     @Autowired
     RecipientsRepository informationRepository;

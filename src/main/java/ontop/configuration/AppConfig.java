@@ -26,10 +26,10 @@ public class AppConfig {
         return new CalculateAmounts();
     }
 
-    @Bean
+  /*  @Bean
     Recipients bankInformation(){
         return new Recipients();
-    }
+    }*/
 
     @Bean
     WalletResponse walletResponse(){

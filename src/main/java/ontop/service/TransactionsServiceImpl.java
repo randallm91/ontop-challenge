@@ -55,8 +55,8 @@ public class TransactionsServiceImpl implements TransactionsService{
 
         BigDecimal currentBalance = getCurrentBalance(transactionRequest.getUserId());
 
-        if(availableWalletFunds(transactionRequest.getAmount(),currentBalance)){
-            if(transactionValidations.validateTransactionInformation(transactionRequest)){
+        if(transactionValidations.validateTransactionInformation(transactionRequest)){
+            if(availableWalletFunds(transactionRequest.getAmount(),currentBalance)){
 
                 transferResponse = transferFunds(transactionServiceJHelper.createTransferStructure(transactionRequest.getAccountNumber(),transactionRequest.getAmount()));
                 walletResponse = updateBalance(transactionServiceJHelper.setAmountToUpdateBalance(transactionRequest.getUserId(), transactionRequest.getAmount()));

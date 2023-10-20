@@ -14,17 +14,17 @@ public class RecipientsController {
     @Autowired
     RecipientsServiceImpl bankInformationService;
 
-    @PostMapping(value = "/add_recipient_bank_information")
+    @PostMapping(value = "/addrecipient")
     public Recipients addRecipientBankInformation(@RequestBody Recipients information){
         return bankInformationService.addRecipientBankInformation(information);
     }
 
-    @GetMapping("/get_all_recipients")
+    @GetMapping("/getallrecipients")
     public List<Recipients> getRecipientBankInformation(){
         return  bankInformationService.getRecipientsBankInformation();
     }
 
-    @GetMapping("get_recipient_by_account_number/{accountNumber}")
+    @GetMapping("getrecipientbyaccountnumber/{accountNumber}")
     public Optional<Recipients> getRecipientBankInformationById(@PathVariable(value = "accountNumber") String accountNumber){
        return bankInformationService.getRecipientBankInformationByAccountNumber(accountNumber);
     }

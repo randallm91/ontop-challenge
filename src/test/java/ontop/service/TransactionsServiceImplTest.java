@@ -1,6 +1,9 @@
 package ontop.service;
 
+import ontop.entity.Transactions;
 import ontop.exceptions.BalanceException;
+import ontop.service_gateways.PaymentsApiServiceImpl;
+import ontop.service_gateways.WalletTransactionsApiServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -9,31 +12,7 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TransactionsServiceImplTest {
-
-    @Test
-    void getActualDate() {
-    }
-
-    @Test
-    void getAmount() {
-    }
-
-    @Test
-    void getFee() {
-    }
-
-    @Test
-    void transferFunds() {
-    }
-
-    @Test
-    void updatedBalance() {
-    }
-
-    @Test
-    void getCurrentBalance() {
-    }
+class TransactionsServiceImplTest extends Transactions {
 
     @Test
     void testWhenAvailableWalletFundsAreEnough() {

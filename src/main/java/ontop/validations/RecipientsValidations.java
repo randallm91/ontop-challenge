@@ -14,33 +14,29 @@ public class RecipientsValidations {
     @Autowired
     RecipientsRepository recipientsRepository;
 
-    public boolean isFirstNameNull(String firstName) throws NullRecipientFieldException{
-            if(firstName == null) {
-                throw new NullRecipientFieldException("First Name can not be null");
+    public boolean validateIfFirstNameIsNotNull(String firstName) throws NullRecipientFieldException{
+            if(firstName != null && !firstName.isEmpty()) {
+                return true;
             }
-            return true;
+        throw new NullRecipientFieldException("First Name can not be null or empty");
     }
-    public boolean isLastNameNull(String lastName) throws NullRecipientFieldException{
-        if(lastName== null){
-            throw new NullRecipientFieldException("Last Name can not be null");
-        }
+    public boolean validateIfLastNameIsNotNull(String lastName) throws NullRecipientFieldException{
+        if(lastName != null && !lastName.isEmpty()){
             return true;
+        }
+        throw new NullRecipientFieldException("Last Name can not be null or empty");
     }
-    public boolean isRoutingNumberNull(String routingNumber) throws NullRecipientFieldException{
-        if(routingNumber== null){
-           throw new NullRecipientFieldException("Routing Number can not be null");
-        }
-        else{
+    public boolean validateIfRoutingNumberIsNotNull(String routingNumber) throws NullRecipientFieldException{
+        if(routingNumber != null && !routingNumber.isEmpty()){
             return true;
         }
+        throw new NullRecipientFieldException("Routing Number can not be null or empty");
     }
-    public boolean isNationalIdentificationNumberNull(String identificationNumber) throws NullRecipientFieldException{
-        if(identificationNumber == null){
-            throw new NullRecipientFieldException("National Identification Number can not be null");
-        }
-        else{
+    public boolean validateIfNationalIdentificationNumberIsNotNull(String identificationNumber) throws NullRecipientFieldException{
+        if(identificationNumber != null && !identificationNumber.isEmpty()){
             return true;
         }
+        throw new NullRecipientFieldException("National Identification Number can not be null or empty");
     }
 
    public boolean validateIfNationalIdentificationNumberAlreadyExist(String nationalIdentificationNumber) throws ExistentRecipientFieldException{
@@ -51,7 +47,6 @@ public class RecipientsValidations {
         }
         return true;
     }
-
     public boolean validateIfAccountNumberAlreadyExist(String accountNumber) throws AccountNumberException{
         Optional<Recipients> recipient = recipientsRepository.findRecipientByAccountNumber(accountNumber);
 
@@ -61,13 +56,11 @@ public class RecipientsValidations {
         return true;
     }
 
-    public boolean isAccountNumberNull(String accountNumber) throws AccountNumberException{
-        if(accountNumber == null){
-            throw new AccountNumberException("Account Number can not be null");
-        }
-        else{
+    public boolean validateIfAccountNumberIsNotNull(String accountNumber) throws AccountNumberException{
+        if(accountNumber != null && !accountNumber.isEmpty()){
             return true;
         }
+        throw new AccountNumberException("Account Number can not be null or empty");
     }
 
     public boolean validateIfRecipientAlreadyExist(int userId , String accountNumber) throws RecipientAlreadyExistException{
@@ -84,16 +77,13 @@ public class RecipientsValidations {
         if(information == null){
             return false;
         }
-        else if(!isFirstNameNull(information.getFirstName()) ||
-                !isLastNameNull(information.getLastName()) ||
-                !isRoutingNumberNull(information.getRoutingNumber())||
-                !isNationalIdentificationNumberNull(information.getNationalIdentificationNumber()) ||
-                !isAccountNumberNull(information.getAccountNumber()) ||
-                !validateIfNationalIdentificationNumberAlreadyExist(information.getNationalIdentificationNumber())||
-                !validateIfAccountNumberAlreadyExist(information.getAccountNumber())||
-                !validateIfRecipientAlreadyExist(information.getUserId(),information.getAccountNumber())){
-            return false;
-        }
-        return true;
+        else return (validateIfFirstNameIsNotNull(information.getFirstName())&&
+                validateIfLastNameIsNotNull(information.getLastName())&&
+                validateIfRoutingNumberIsNotNull(information.getRoutingNumber())&&
+                validateIfNationalIdentificationNumberIsNotNull(information.getNationalIdentificationNumber())&&
+                validateIfNationalIdentificationNumberAlreadyExist(information.getNationalIdentificationNumber())&&
+                validateIfAccountNumberAlreadyExist(information.getAccountNumber())&&
+                validateIfAccountNumberIsNotNull(information.getAccountNumber())&&
+                validateIfRecipientAlreadyExist(information.getUserId(),information.getAccountNumber()));
     }
 }
