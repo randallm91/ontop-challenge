@@ -3,6 +3,8 @@ package ontop.configuration;
 import ontop.business.CalculateAmounts;
 import ontop.entity.OntopAccounts;
 import ontop.entity.Recipients;
+import ontop.entity.Transactions;
+import ontop.entity.WalletTransactionHistory;
 import ontop.transferModels.TransactionRequest;
 import ontop.transferModels.TransactionResponse;
 import ontop.transferModels.TransferRequest;
@@ -47,6 +49,12 @@ public class AppConfig {
     OntopAccounts ontopAccounts(){
         return new OntopAccounts();
     }
+    @Bean
+    Transactions transactions(){
+        return new Transactions();
+    }
+    @Bean
+    WalletTransactionHistory walletTransactionHistory(){return new WalletTransactionHistory();}
 
 
 }

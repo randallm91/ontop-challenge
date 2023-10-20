@@ -1,14 +1,14 @@
 package ontop.service;
 
 import ontop.business.CalculateAmounts;
-import ontop.entity.OntopAccounts;
 import ontop.entity.Recipients;
+import ontop.entity.Transactions;
 import ontop.exceptions.BalanceException;
-import ontop.repository.RecipientsRepository;
 import ontop.repository.TransactionsRepository;
 import ontop.service_gateways.BalanceTransactionsApiServiceImpl;
 import ontop.service_gateways.PaymentsApiServiceImpl;
 import ontop.service_gateways.WalletTransactionsApiServiceImpl;
+import ontop.service_helper.TransactionServiceJHelper;
 import ontop.transferModels.*;
 import ontop.validations.TransactionValidations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Currency;
 import java.util.Optional;
 
 @Service
@@ -33,8 +32,6 @@ public class TransactionsServiceImpl implements TransactionsService{
     @Autowired
     RecipientsServiceImpl recipientsService;
     @Autowired
-    OntopAccounts ontopAccounts;
-    @Autowired
     TransactionValidations transactionValidations;
     @Autowired
     TransactionResponse transactionResponse;
@@ -43,73 +40,63 @@ public class TransactionsServiceImpl implements TransactionsService{
     @Autowired
     TransactionsRepository transactionsRepository;
     @Autowired
-    Source source;
+    TransactionServiceJHelper transactionServiceJHelper;
     @Autowired
-    SourceInformation sourceInformation;
+    WalletResponse walletResponse;
     @Autowired
-    SourceAccount sourceAccount;
+    TransferResponse transferResponse;
     @Autowired
-    Destination destination;
+    Transactions transactions;
     @Autowired
-    DestinationAccount destinationAccount;
-    @Autowired
-    TransferRequest transferRequest;
+    WalletTransactionHistoryServiceImpl walletTransactionServiceHistory;
 
     @Override
     public TransactionResponse createTransaction(TransactionRequest transactionRequest){
 
         BigDecimal currentBalance = getCurrentBalance(transactionRequest.getUserId());
 
-        Optional<Recipients> optionalRecipients= recipientsService.getRecipientBankInformationByAccountNumber(transactionRequest.getAccountNumber());
-        recipients = optionalRecipients.orElse(new Recipients());
-
         if(availableWalletFunds(transactionRequest.getAmount(),currentBalance)){
             if(transactionValidations.validateTransactionInformation(transactionRequest)){
 
-                source.setType(ontopAccounts.getAccountType());
-                source.setSourceInformation(sourceInformation);
-                source.setAccount(sourceAccount);
+                transferResponse = transferFunds(transactionServiceJHelper.createTransferStructure(transactionRequest.getAccountNumber(),transactionRequest.getAmount()));
+                walletResponse = updateBalance(transactionServiceJHelper.setAmountToUpdateBalance(transactionRequest.getUserId(), transactionRequest.getAmount()));
 
-                sourceInformation.setName(ontopAccounts.getAccountName());
-
-                sourceAccount.setAccountNumber(ontopAccounts.getAccountNumber());
-                sourceAccount.setCurrency(ontopAccounts.getCurrency());
-                sourceAccount.setRoutingNumber(ontopAccounts.getRoutingNumber());
-
-                destination.setName(recipients.getFirstName());
-                destination.setAccount(destinationAccount);
-
-                destinationAccount.setAccountNumber(recipients.getAccountNumber());
-                destinationAccount.setCurrency(Currency.getInstance("USD").toString()); //revisar esto
-                destinationAccount.setRoutingNumber(recipients.getRoutingNumber());
-
-                transferRequest.setSource(source);
-                transferRequest.setDestination(destination);
-                transferRequest.setAmount(transactionRequest.getAmount());
-
-                TransferResponse transferResponse = transferFunds(transferRequest);
-
+                transactionResponse.setMessage("Transaction succeed!");
                 transactionResponse.setAmount(transactionRequest.getAmount());
                 transactionResponse.setFee(amounts.getFees());
                 transactionResponse.setNetAmount(amounts.calculateNetAmount(transactionRequest.getAmount()));
                 transactionResponse.setDate(getActualDate());
-                transactionResponse.setMessage("Transaction succeed!");
                 transactionResponse.setStatus(transferResponse.getRequestInfo().getStatus());
+
+                saveTransactionInformation(transactionRequest.getUserId(), transactionRequest.getAccountNumber());
+                walletTransactionServiceHistory.saveWalletTransactionInformation(transactionRequest.getUserId(), walletResponse.getAmount());
 
             }
         }
-
         return transactionResponse;
     }
 
+    public void saveTransactionInformation(int userId, String accountNumber){
+        Optional<Recipients> optionalRecipients= recipientsService.getRecipientBankInformationByAccountNumber(accountNumber);
+        recipients = optionalRecipients.orElse(new Recipients());
+
+        transactions.setUserId(userId);
+        transactions.setRecipientId(recipients.getRecipientId());
+        transactions.setAmount(walletResponse.getAmount());
+        transactions.setNetAmount(transactionResponse.getNetAmount());
+        transactions.setFees(amounts.getFees());
+        transactions.setTransactionDate(getActualDate());
+        transactions.setStatus(transactionResponse.getStatus());
+        transactionsRepository.save(transactions);
+    }
     @Override
     public LocalDate getActualDate(){
         return LocalDate.now();
     }
 
     @Override
-    public BigDecimal getAmount(WalletRequest walletRequest) {
-        return transactionsApiService.getTransactionFromExternalApi(walletRequest).getAmount();
+    public WalletResponse updateBalance(WalletRequest walletRequest) {
+        return transactionsApiService.getTransactionFromExternalApi(walletRequest);
     }
 
     @Override
@@ -121,14 +108,6 @@ public class TransactionsServiceImpl implements TransactionsService{
     public TransferResponse transferFunds(TransferRequest transferRequest) {
         return paymentsApiService.executeTransference(transferRequest);
     }
-
-    @Override
-    public BigDecimal updatedBalance(WalletRequest walletRequest, int userId) {
-        BigDecimal currentBalance = getCurrentBalance(userId);
-        BigDecimal amount = getAmount(walletRequest);
-        return currentBalance.subtract(amount);
-    }
-
     @Override
     public BigDecimal getCurrentBalance(int userId) {
         return balanceTransactionsApiService.getBalanceTransactionFromExternalApi(userId).getBalance();

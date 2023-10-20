@@ -18,4 +18,5 @@ public class TransferRequest {
     private Destination destination;
     @JsonProperty("amount")
     private BigDecimal amount;
+
 }

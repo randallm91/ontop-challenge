@@ -11,8 +11,6 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class PaymentsApiServiceImpl  implements PaymentsApiService{
 
-    private final String API_URL = "http://mockoon.tools.getontop.com:3000/api/v1/payments";
-
     @Autowired
     RestTemplate restTemplate;
 
@@ -24,6 +22,7 @@ public class PaymentsApiServiceImpl  implements PaymentsApiService{
     public TransferResponse executeTransference(TransferRequest transferRequest) {
         ResponseEntity<TransferResponse> response;
         HttpEntity<TransferRequest> transferRequestHttpEntity = new HttpEntity<>(transferRequest);
+        String API_URL = "http://mockoon.tools.getontop.com:3000/api/v1/payments";
         response= restTemplate.postForEntity(API_URL,transferRequestHttpEntity, TransferResponse.class);
 
         return response.getBody();

@@ -86,4 +86,15 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(InvalidTransactionException.class)
+    ResponseEntity<ErrorDetails> invalidTransactionHandler(InvalidTransactionException invalidTransactionException , WebRequest webRequest){
+        ErrorDetails errorDetails = new ErrorDetails();
+
+        errorDetails.setDateTime(LocalDateTime.now());
+        errorDetails.setMessage(invalidTransactionException.getMessage());
+        errorDetails.setDetails(webRequest.getDescription(false));
+
+        return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
 }

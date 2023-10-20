@@ -10,11 +10,9 @@ public interface TransactionsService {
     TransactionResponse createTransaction(TransactionRequest transactionRequest);
     LocalDate getActualDate();
 
-    BigDecimal updatedBalance(WalletRequest walletRequest , int userId);
-
     BigDecimal getCurrentBalance(int userId);
 
-    BigDecimal getAmount(WalletRequest walletRequest);
+    WalletResponse updateBalance(WalletRequest walletRequest);
 
     double getFee();
 

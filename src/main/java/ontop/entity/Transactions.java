@@ -32,7 +32,7 @@ public class Transactions {
     @Column(name = "transaction_date")
     private LocalDate transactionDate;
     @Column(name = "transaction_status")
-    private int status;
+    private String status;
 
 
 

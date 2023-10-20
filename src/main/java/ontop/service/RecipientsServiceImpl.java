@@ -29,8 +29,7 @@ public class RecipientsServiceImpl implements RecipientsService {
 
     @Override
     public List<Recipients> getRecipientsBankInformation() {
-        List<Recipients> recipientsBankInformationList = informationRepository.findAll();
-        return recipientsBankInformationList;
+        return informationRepository.findAll();
     }
 
     @Override

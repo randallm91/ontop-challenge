@@ -9,8 +9,6 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class BalanceTransactionsApiServiceImpl implements BalanceTransactionApiService{
 
-    private final String API_URL = "http://mockoon.tools.getontop.com:3000/wallets/balance?user_id=%s";
-
     @Autowired
     RestTemplate restTemplate;
 
@@ -19,6 +17,7 @@ public class BalanceTransactionsApiServiceImpl implements BalanceTransactionApiS
     }
 
     public Balance getBalanceTransactionFromExternalApi(int userId) {
+        String API_URL = "http://mockoon.tools.getontop.com:3000/wallets/balance?user_id=%s";
         String formatterURL = String.format(API_URL,userId);
         ResponseEntity<Balance> response = restTemplate.getForEntity(formatterURL, Balance.class);
         return response.getBody();

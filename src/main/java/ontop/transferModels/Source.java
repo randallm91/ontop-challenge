@@ -19,5 +19,6 @@ public class Source {
     private SourceInformation sourceInformation;
     @JsonProperty("account")
     private SourceAccount account;
+
 }
 

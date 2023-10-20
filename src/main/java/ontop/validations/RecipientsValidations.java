@@ -14,19 +14,19 @@ public class RecipientsValidations {
     @Autowired
     RecipientsRepository recipientsRepository;
 
-    public boolean isFirstNameNull(String firstName){
+    public boolean isFirstNameNull(String firstName) throws NullRecipientFieldException{
             if(firstName == null) {
                 throw new NullRecipientFieldException("First Name can not be null");
             }
             return true;
     }
-    public boolean isLastNameNull(String lastName){
+    public boolean isLastNameNull(String lastName) throws NullRecipientFieldException{
         if(lastName== null){
             throw new NullRecipientFieldException("Last Name can not be null");
         }
             return true;
     }
-    public boolean isRoutingNumberNull(String routingNumber){
+    public boolean isRoutingNumberNull(String routingNumber) throws NullRecipientFieldException{
         if(routingNumber== null){
            throw new NullRecipientFieldException("Routing Number can not be null");
         }
@@ -34,7 +34,7 @@ public class RecipientsValidations {
             return true;
         }
     }
-    public boolean isNationalIdentificationNumberNull(String identificationNumber){
+    public boolean isNationalIdentificationNumberNull(String identificationNumber) throws NullRecipientFieldException{
         if(identificationNumber == null){
             throw new NullRecipientFieldException("National Identification Number can not be null");
         }
@@ -43,7 +43,7 @@ public class RecipientsValidations {
         }
     }
 
-   public boolean validateIfNationalIdentificationNumberAlreadyExist(String nationalIdentificationNumber){
+   public boolean validateIfNationalIdentificationNumberAlreadyExist(String nationalIdentificationNumber) throws ExistentRecipientFieldException{
         Optional<Recipients> recipient = recipientsRepository.findRecipientByNationalIdentificationNumber(nationalIdentificationNumber);
 
         if(recipient.isPresent()){
@@ -52,7 +52,7 @@ public class RecipientsValidations {
         return true;
     }
 
-    public boolean validateIfAccountNumberAlreadyExist(String accountNumber){
+    public boolean validateIfAccountNumberAlreadyExist(String accountNumber) throws AccountNumberException{
         Optional<Recipients> recipient = recipientsRepository.findRecipientByAccountNumber(accountNumber);
 
         if(recipient.isPresent()){
@@ -61,7 +61,7 @@ public class RecipientsValidations {
         return true;
     }
 
-    public boolean isAccountNumberNull(String accountNumber){
+    public boolean isAccountNumberNull(String accountNumber) throws AccountNumberException{
         if(accountNumber == null){
             throw new AccountNumberException("Account Number can not be null");
         }
@@ -70,7 +70,7 @@ public class RecipientsValidations {
         }
     }
 
-    public boolean validateIfRecipientAlreadyExist(int userId , String accountNumber){
+    public boolean validateIfRecipientAlreadyExist(int userId , String accountNumber) throws RecipientAlreadyExistException{
         Optional<Recipients> recipientByUserId = recipientsRepository.findRecipientByUserId(userId);
         Optional<Recipients> recipientByAccountNumber = recipientsRepository.findRecipientByAccountNumber(accountNumber);
 

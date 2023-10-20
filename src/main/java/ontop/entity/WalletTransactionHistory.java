@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -25,6 +26,6 @@ public class WalletTransactionHistory {
     @Column(name = "transaction_status")
     private String transactionStatus;
     @Column(name = "history_date")
-    private String historyDate;
+    private LocalDate historyDate;
 
 }
